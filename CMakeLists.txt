@@ -136,7 +136,7 @@ endif()
 # Extract archive
 if(NOT EXISTS ${CMAKE_CURRENT_BINARY_DIR}/${OUT_DIR_NAME})
     status_message("Extract ${CMAKE_CURRENT_BINARY_DIR}/${OUT_NAME}")
-    execute_process(COMMAND ${CMAKE_COMMAND} -E tar xzf ${CMAKE_CURRENT_BINARY_DIR}/${OUT_NAME})
+    execute_process(COMMAND ${CMAKE_COMMAND} -E tar xvzf ${CMAKE_CURRENT_BINARY_DIR}/${OUT_NAME})
 endif()
 
 if(NOT SKIP_INSTALL_LIBRARIES AND NOT SKIP_INSTALL_ALL )
