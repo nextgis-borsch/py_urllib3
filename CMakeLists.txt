@@ -3,7 +3,7 @@
 # Purpose:  CMake build scripts
 # Author:   Dmitry Baryshnikov, dmitry.baryshnikov@nexgis.com
 ################################################################################
-# Copyright (C) 2017-2023, NextGIS <info@nextgis.com>
+# Copyright (C) 2017-2025, NextGIS <info@nextgis.com>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a
 # copy of this software and associated documentation files (the "Software"),
@@ -46,6 +46,8 @@ else()
     set(INSTALL_LIB_DIR "." CACHE INTERNAL "Installation directory for libraries" FORCE)
 endif()
 
+option(VERSION_MAX "Max version to download" "")
+
 unset(PYTHONINTERP_FOUND)
 unset(PYTHON_EXECUTABLE)
 unset(PYTHON_VERSION_MAJOR)
@@ -79,11 +81,28 @@ file(DOWNLOAD "https://pypi.python.org/pypi/${PROJECT_NAME}/json" "${CMAKE_CURRE
 include(util)
 get_compiler_version(COMPILER)
 # get version and download url
-execute_process(COMMAND ${PYTHON_EXECUTABLE}
-    ${CMAKE_SOURCE_DIR}/cmake/pypi_process.py ${PLUGIN} ${CMAKE_CURRENT_BINARY_DIR}/meta.json ${COMPILER}
-    OUTPUT_VARIABLE PACKAGE_DETAILS
-    OUTPUT_STRIP_TRAILING_WHITESPACE
-)
+if(DEFINED VERSION_MAX)
+    execute_process(
+        COMMAND ${PYTHON_EXECUTABLE}
+        ${CMAKE_SOURCE_DIR}/cmake/pypi_process.py 
+        ${PLUGIN} 
+        ${CMAKE_CURRENT_BINARY_DIR}/meta.json 
+        ${COMPILER} 
+        ${VERSION_MAX}
+        OUTPUT_VARIABLE PACKAGE_DETAILS
+        OUTPUT_STRIP_TRAILING_WHITESPACE
+    )
+else()
+    execute_process(
+        COMMAND ${PYTHON_EXECUTABLE}
+        ${CMAKE_SOURCE_DIR}/cmake/pypi_process.py 
+        ${PLUGIN} 
+        ${CMAKE_CURRENT_BINARY_DIR}/meta.json 
+        ${COMPILER}
+        OUTPUT_VARIABLE PACKAGE_DETAILS
+        OUTPUT_STRIP_TRAILING_WHITESPACE
+    )
+endif()
 
 list(GET PACKAGE_DETAILS 0 DOWNLOAD_URL)
 list(GET PACKAGE_DETAILS 1 VERSION)
